@@ -40,7 +40,7 @@ const globalSlice = createSlice({
   extraReducers: (builder) => {
     // Handle asynchronous actions
     builder.addCase(getAllStudent.fulfilled, (state, action) => {
-      state.allStudent = action.payload.data;
+      state.allStudent = action.payload;
     });
     builder.addCase(getCurrentStudent.fulfilled, (state, action) => {
       state.currentstudent = action.payload;

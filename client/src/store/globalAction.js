@@ -97,6 +97,7 @@ export const getCurrentStudent = createAsyncThunk(
   async (studentId, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get(`/students/getstudent/${studentId}`);
+      console.log("response from getCurrentStudent =>", response.data);
       return response.data;
       
     } catch (error) {

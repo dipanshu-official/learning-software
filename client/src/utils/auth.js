@@ -1,5 +1,3 @@
-// Authentication utility functions
-
 
 
 export const getUserSession = () => {

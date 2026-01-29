@@ -23,7 +23,7 @@ export const userProfileDataSelector = createSelector(
 );
 export const currentStudentDataSelector = createSelector(
   [globlState],
-  (state) => state.currentstudent?.data?.student
+  (state) => state.currentstudent
 );
 
 

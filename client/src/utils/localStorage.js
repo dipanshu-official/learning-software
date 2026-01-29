@@ -1,4 +1,3 @@
-// Utility functions for localStorage operations
 
 // Student localStorage functions
 export const getStoredStudents = () => {

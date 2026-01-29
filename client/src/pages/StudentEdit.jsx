@@ -237,7 +237,8 @@ const StudentEdit = () => {
                 <input
                   type="date"
                   name="dateOfBirth"
-                  value={formData.dateOfBirth}
+                  value={formData.dateOfBirth?.split("T")[0] || ""}
+
                   onChange={handleInputChange}
                   required
                   className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"

@@ -19,7 +19,6 @@ import { getCurrentStudent } from "../store/globalAction";
 const StudentDetails = () => {
   const { id } = useParams();
   const dispatch = useDispatch();
- 
 
   useEffect(() => {
     if (id) {
@@ -29,7 +28,8 @@ const StudentDetails = () => {
 
   // First check localStorage, then fallback to dummy data
   const student = useSelector(currentStudentDataSelector);
-
+  console.log("student=> ",student)
+  
 
   if (!student) {
     return (

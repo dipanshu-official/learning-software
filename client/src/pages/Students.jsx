@@ -21,7 +21,7 @@ const Students = () => {
 
   const dispatch = useDispatch();
   const studentstate = useSelector(allstudentDataSelector);
-  const studentsData = studentstate?.students || [];
+  console.log("student state", studentstate);
 
   useEffect(() => {
     dispatch(getAllStudent());
@@ -55,7 +55,7 @@ const Students = () => {
     setStudentToDelete(null);
   };
 
-  const getPaymentStatusBadge = (paymentStatus) => {
+  const getPaymentStatusBadge = (paymentStatus = "") => {
     switch (paymentStatus.toLowerCase()) {
       case "paid":
         return "bg-green-100 text-green-800";
@@ -67,7 +67,7 @@ const Students = () => {
   };
 
   // Filter students based on search term and payment filter
-  const filteredStudents = studentsData.filter((student) => {
+  const filteredStudents = studentstate.filter((student) => {
     const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
     const matchesSearch =
       searchTerm === "" || fullName.includes(searchTerm.toLowerCase());
@@ -77,6 +77,7 @@ const Students = () => {
 
     return matchesSearch && matchesPaymentFilter;
   });
+  console.log("filteredStudents", filteredStudents);
 
   return (
     <div className="space-y-6">
@@ -265,7 +266,7 @@ const Students = () => {
       {/* Pagination Info */}
       <div className="flex items-center justify-between">
         <p className="text-sm text-gray-600">
-          Showing {filteredStudents.length} of {studentsData.length} students
+          Showing {filteredStudents.length} of {studentstate.length} students
           {(searchTerm || paymentFilter !== "all") && (
             <span className="ml-2 text-navy-600">(filtered)</span>
           )}
