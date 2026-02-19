@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { adminLogin } from "../store/globalAction"; // Assuming it's a thunk
+import { userLogin } from "../store/globalAction"; 
 import { BookOpen, Eye, EyeOff, Lock, Mail, Shield } from "lucide-react";
 
 const Login = () => {
@@ -32,10 +32,10 @@ const Login = () => {
 
     try {
       const response = await dispatch(
-        adminLogin({
+        userLogin({
           email: formData.email,
           password: formData.password,
-        })
+        }),
       ).unwrap(); // ✅ unwrap gives { token: "..." }
 
       console.log("Login success:", response);
@@ -64,10 +64,8 @@ const Login = () => {
           <div className="inline-flex items-center justify-center w-16 h-16 bg-yellow-500 rounded-2xl mb-4">
             <BookOpen className="h-8 w-8 text-blue-900" />
           </div>
-          <h1 className="text-3xl font-bold text-white mb-2">SUCCEED</h1>
-          <p className="text-yellow-400 text-lg font-medium">
-            LMS
-          </p>
+          <h1 className="text-3xl font-bold text-white mb-2">LMS</h1>
+
           <p className="text-blue-300 text-sm mt-2">Admin Panel Login</p>
         </div>
 
@@ -169,6 +167,19 @@ const Login = () => {
               )}
             </button>
           </form>
+
+          <div className="text-center mt-6">
+            <p className="text-sm text-gray-600">
+              Don’t have an account?{" "}
+              <button
+                type="button"
+                onClick={() => navigate("/signup")}
+                className="text-blue-600 hover:text-blue-700 font-medium"
+              >
+                Sign Up
+              </button>
+            </p>
+          </div>
         </div>
 
         {/* Footer */}
@@ -176,9 +187,7 @@ const Login = () => {
           <p className="text-blue-300 text-sm">
             © 2024 Cybernest. All rights reserved.
           </p>
-          <p className="text-blue-400 text-xs mt-1">
-            Jagdevpath, Patna - Admin Panel v1.0
-          </p>
+          <p className="text-blue-400 text-xs mt-1">Admin Panel v1.0</p>
         </div>
       </div>
     </div>

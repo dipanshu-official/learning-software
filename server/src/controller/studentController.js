@@ -1,5 +1,7 @@
 import Student from "../models/Student.js";
 
+
+
 export const createStudent = async (req, res) => {
     try {
         const student = await Student.create(req.body);
@@ -10,7 +12,7 @@ export const createStudent = async (req, res) => {
 };
 
 export const getStudents = async (req, res) => {
-    console.log("Fetching all students");
+  
     try {
         const students = await Student.find();
         res.status(200).json(students);
@@ -32,6 +34,7 @@ export const getStudentById = async (req, res) => {
 };  
 
 export const updateStudent = async (req, res) => {
+  
     try {
         const student = await Student.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!student) {
@@ -42,6 +45,7 @@ export const updateStudent = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
+
 
 export const deleteStudent = async (req, res) => {
     try {

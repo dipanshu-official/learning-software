@@ -16,7 +16,8 @@ import {
   CloudSnow,
 } from "lucide-react";
 import { studentsData } from "../data/studentsData";
-import { getStoredStudents, updateStudent } from "../utils/localStorage";
+import { updateStudent } from "../store/globalAction";
+
 import { currentStudentDataSelector } from "../store/globalSelctor";
 import { getCurrentStudent } from "../store/globalAction";
 
@@ -133,13 +134,11 @@ const StudentEdit = () => {
           updatedData: formData,
         })
       );
-
-      if (updateStudent.fulfilled.match(resultAction)) {
-        toast.success("Student updated successfully!");
+        toast.success("Student updated successfully!")
         navigate(`/students/${id}`);
-      } else {
-        toast.error(resultAction.payload || "Failed to update student");
-      }
+
+
+      
     } catch (error) {
       console.error("Error updating student:", error);
       toast.error("Error updating student. Please try again.");

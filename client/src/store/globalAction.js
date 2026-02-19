@@ -144,11 +144,11 @@ export const deleteStudent = createAsyncThunk(
     }
   }
 );
-export const adminLogin = createAsyncThunk(
+export const userLogin = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post('/admin/login', { email, password });
+      const { data } = await axiosInstance.post('api/auth/login', { email, password });
 
       console.log('Login response:', data); // should show { token: "..." }
 
@@ -156,6 +156,25 @@ export const adminLogin = createAsyncThunk(
       return { token: data.token };
     } catch (err) {
       return rejectWithValue(err.response?.data?.error || 'Login failed');
+    }
+  }
+);
+export const userRegister = createAsyncThunk(
+  'auth/register',
+  async ({ name, email, instituteName, password }, { rejectWithValue }) => {
+    try {
+      const { data } = await axiosInstance.post('/api/auth/register', {
+        name,
+        email,
+        instituteName,
+        password,
+      });
+
+      console.log('Register response:', data); // should show { token: "..." }
+
+      return { token: data.token };
+    } catch (err) {
+      return rejectWithValue(err.response?.data?.error || 'Registration failed');
     }
   }
 );

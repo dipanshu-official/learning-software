@@ -18,6 +18,7 @@ import Notifications from "../pages/Notifications";
 import Payments from "../pages/Payments";
 import Invoice from "../components/invoice/Invoice";
 import Certificate from "../components/certificate/Certificate";
+import Signup from "../pages/Signup";
 
 const AppRoutes = () => {
   return (
@@ -34,6 +35,7 @@ const AppRoutes = () => {
         }
       />
       <Route path="/login" element={<Login />} />
+      <Route path="/signup" element={<Signup />} />
       <Route
         path="/admin"
         element={

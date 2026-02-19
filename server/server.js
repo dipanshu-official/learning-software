@@ -2,7 +2,7 @@ import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import studentRoute from './src/routes/studentRoute.js';
-import adminRoute from './src/routes/adminRoute.js';
+import authRoutes from  './src/routes/authRoutes.js'
 
 import dotenv from 'dotenv';
 
@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 
 //api routes
 app.use('/students', studentRoute); 
-app.use('/api/admin', adminRoute); 
+app.use("/api/auth", authRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

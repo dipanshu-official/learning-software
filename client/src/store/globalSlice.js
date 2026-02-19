@@ -1,6 +1,6 @@
 import {
   getAllStudent,
-  adminLogin,
+  userLogin,
   loginPrinciple,
   getAllTeacher,
   deleteStudent,
@@ -52,7 +52,7 @@ const globalSlice = createSlice({
       );
     });
 
-    builder.addCase(adminLogin.fulfilled, (state, action) => {
+    builder.addCase(userLogin.fulfilled, (state, action) => {
       state.token = action.payload.token; // ✅ we know it’s { token: ... }
       localStorage.setItem("token", action.payload.token);
     });
