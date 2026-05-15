@@ -28,7 +28,7 @@ const StudentDetails = () => {
 
   // First check localStorage, then fallback to dummy data
   const student = useSelector(currentStudentDataSelector);
-  console.log("student=> ",student)
+
   
 
   if (!student) {
@@ -343,10 +343,7 @@ const StudentDetails = () => {
           <span>Edit Student</span>
         </Link>
 
-        <button className="px-6 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 transition-colors flex items-center space-x-2">
-          <Mail className="h-4 w-4" />
-          <span>Send Message</span>
-        </button>
+      
       </div>
     </div>
   );

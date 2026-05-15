@@ -237,7 +237,7 @@ export default function Invoice() {
                   <tr className="bg-gradient-to-r from-slate-800 to-slate-900 text-white">
                     <td className="p-2 font-bold">Balance Due</td>
                     <td className="p-2 text-right font-bold text-lg">
-                      ₹{invoice.previousDues }
+                      ₹{invoice.totalFees - invoice.amountPaid}
                     </td>
                   </tr>
                 </tbody>

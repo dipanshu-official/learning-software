@@ -168,18 +168,7 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="text-center mt-6">
-            <p className="text-sm text-gray-600">
-              Don’t have an account?{" "}
-              <button
-                type="button"
-                onClick={() => navigate("/signup")}
-                className="text-blue-600 hover:text-blue-700 font-medium"
-              >
-                Sign Up
-              </button>
-            </p>
-          </div>
+         
         </div>
 
         {/* Footer */}

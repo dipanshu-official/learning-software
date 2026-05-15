@@ -1,7 +1,5 @@
 import Student from "../models/Student.js";
 
-
-
 export const createStudent = async (req, res) => {
     try {
         const student = await Student.create(req.body);
@@ -45,7 +43,6 @@ export const updateStudent = async (req, res) => {
         res.status(500).json({ error: error.message });
     }
 };
-
 
 export const deleteStudent = async (req, res) => {
     try {

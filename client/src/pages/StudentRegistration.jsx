@@ -15,7 +15,6 @@ import {
 } from "lucide-react";
 import { newRegistration } from "../store/globalAction";
 import { useDispatch,useSelector } from "react-redux";
-import { saveStudent } from "../utils/localStorage";
 import { allstudentDataSelector } from "../store/globalSelctor";
 
 const StudentRegistration = () => {

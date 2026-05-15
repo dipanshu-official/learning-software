@@ -1,7 +1,3 @@
-import React from 'react';
-import { DivideIcon as LucideIcon } from 'lucide-react';
-
-
 
 const EmptyState = ({
   icon: Icon,

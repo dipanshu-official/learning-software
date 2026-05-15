@@ -112,7 +112,6 @@ const Sidebar = ({
 
         <div className="absolute bottom-4 left-4 right-4">
           <div className="bg-navy-800 rounded-lg p-4 text-center">
-            <p className="text-gold-400 text-sm font-medium">Jagdevpath, Patna</p>
             <p className="text-gray-400 text-xs mt-1">
               Admin Panel v1.0
               {userSession && (
