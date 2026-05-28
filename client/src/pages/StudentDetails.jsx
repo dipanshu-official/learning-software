@@ -246,9 +246,9 @@ const StudentDetails = () => {
               </p>
             </div>
             <div className="text-center p-4 bg-green-50 rounded-lg">
-              <p className="text-sm text-gray-600">Paid Amount</p>
+              <p className="text-sm text-gray-600">Initial Amount</p>
               <p className="text-xl font-bold text-green-600">
-                ₹{Number(student.paidFees).toLocaleString()}
+                ₹{Number(student.InitialFees).toLocaleString()}
               </p>
             </div>
             <div className="text-center p-4 bg-red-50 rounded-lg">
@@ -256,7 +256,7 @@ const StudentDetails = () => {
               <p className="text-xl font-bold text-red-600">
                 ₹
                 {(
-                  Number(student.totalFees) - Number(student.paidFees)
+                  Number(student.totalFees) - Number(student.InitialFees)
                 ).toLocaleString()}
               </p>
             </div>
@@ -268,7 +268,7 @@ const StudentDetails = () => {
               <span className="text-sm text-gray-600">Payment Progress</span>
               <span className="text-sm font-medium text-gray-900">
                 {Math.round(
-                  (Number(student.paidFees) / Number(student.totalFees)) * 100
+                  (Number(student.InitialFees) / Number(student.totalFees)) * 100
                 )}
                 %
               </span>
@@ -278,7 +278,7 @@ const StudentDetails = () => {
                 className="bg-green-500 h-3 rounded-full transition-all"
                 style={{
                   width: `${
-                    (Number(student.paidFees) / Number(student.totalFees)) * 100
+                    (Number(student.InitialFees) / Number(student.totalFees)) * 100
                   }%`,
                 }}
               />

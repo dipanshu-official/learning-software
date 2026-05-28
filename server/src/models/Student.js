@@ -16,7 +16,6 @@ const studentSchema = new mongoose.Schema({
   gender: {
     type: String,
     required: true,
-    enum: ['male', 'female', 'other']
   },
   course: {
     type: String,
@@ -70,9 +69,14 @@ const studentSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  paidFees: {
+  InitialFees: {
     type: Number,
     required: true
+  },
+  paymentStatus: {
+    type: String,
+    enum: ['Paid', 'Dues'],
+    default: 'Dues'
   },
   photos: {
     passport: String,
@@ -84,6 +88,17 @@ const studentSchema = new mongoose.Schema({
   }]
 }, {
   timestamps: true
+});
+
+studentSchema.pre('save', function(next) {
+  if (this.isModified('totalFees') || this.isModified('InitialFees')) {
+    if (this.InitialFees >= this.totalFees) {
+      this.paymentStatus = 'Paid';
+    } else {
+      this.paymentStatus = 'Dues';
+    }
+  }
+ 
 });
 
 const Student = mongoose.model('Student', studentSchema);

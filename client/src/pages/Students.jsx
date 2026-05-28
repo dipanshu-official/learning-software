@@ -18,6 +18,7 @@ const Students = () => {
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [studentToDelete, setStudentToDelete] = useState(null);
   const [paymentFilter, setPaymentFilter] = useState("all");
+  const [courseFilter, setCourseFilter] = useState("all");
 
   const dispatch = useDispatch();
   const studentstate = useSelector(allstudentDataSelector);
@@ -56,7 +57,7 @@ const Students = () => {
   };
 
   const getPaymentStatusBadge = (paymentStatus = "") => {
-    switch (paymentStatus.toLowerCase()) {
+    switch (paymentStatus?.toLowerCase()) {
       case "paid":
         return "bg-green-100 text-green-800";
       case "dues":
@@ -71,11 +72,18 @@ const Students = () => {
     const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
     const matchesSearch =
       searchTerm === "" || fullName.includes(searchTerm.toLowerCase());
+    
+    const studentPaymentStatus = student.paymentStatus || (student.InitialFees >= student.totalFees ? "Paid" : "Dues");
+    
     const matchesPaymentFilter =
       paymentFilter === "all" ||
-      student.paymentStatus.toLowerCase() === paymentFilter.toLowerCase();
+      studentPaymentStatus.toLowerCase() === paymentFilter.toLowerCase();
 
-    return matchesSearch && matchesPaymentFilter;
+    const matchesCourseFilter =
+      courseFilter === "all" ||
+      student.course.toLowerCase() === courseFilter.toLowerCase();
+
+    return matchesSearch && matchesPaymentFilter && matchesCourseFilter;
   });
   console.log("filteredStudents", filteredStudents);
 
@@ -105,7 +113,29 @@ const Students = () => {
             />
           </div>
 
-          <div className="flex items-center space-x-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <select
+              value={courseFilter}
+              onChange={(e) => setCourseFilter(e.target.value)}
+              className="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-navy-500 focus:border-transparent"
+            >
+              <option value="all">All Courses</option>
+              <option value="DCA">DCA</option>
+              <option value="ADCA">ADCA</option>
+              <option value="PGDCA">PGDCA</option>
+              <option value="Tally with GST">Tally with GST</option>
+              <option value="Basic Computer Course">Basic Computer Course</option>
+              <option value="Typing Skills">Typing Skills</option>
+              <option value="Web Development">Web Development</option>
+              <option value="Frontend Development">Frontend Development</option>
+              <option value="Full Stack Development">Full Stack Development</option>
+              <option value="Class 1 to 5 Coaching">Class 1 to 5 Coaching</option>
+              <option value="Class 6 to 8 Coaching">Class 6 to 8 Coaching</option>
+              <option value="Class 9 to 10 Coaching">Class 9 to 10 Coaching</option>
+              <option value="Spoken English">Spoken English</option>
+              <option value="English Speaking Course">English Speaking Course</option>
+            </select>
+
             <select
               value={paymentFilter}
               onChange={(e) => setPaymentFilter(e.target.value)}
@@ -196,13 +226,13 @@ const Students = () => {
                   <td className="py-4 px-4 sm:px-6 hidden md:table-cell">
                     <div className="space-y-1">
                       <p className="text-sm font-medium text-gray-900">
-                        ₹{Number(student.paidFees).toLocaleString()} / ₹
+                        ₹{Number(student.InitialFees).toLocaleString()} / ₹
                         {Number(student.totalFees).toLocaleString()}
                       </p>
                       <p className="text-xs text-gray-500">
                         Due: ₹
                         {(
-                          Number(student.totalFees) - Number(student.paidFees)
+                          Number(student.totalFees) - Number(student.InitialFees)
                         ).toLocaleString()}
                       </p>
                     </div>
@@ -215,10 +245,10 @@ const Students = () => {
                   <td className="py-4 px-4 sm:px-6 hidden sm:table-cell">
                     <span
                       className={`px-2 py-1 rounded-full text-sm font-medium ${getPaymentStatusBadge(
-                        student.paymentStatus
+                        student.paymentStatus || (student.InitialFees >= student.totalFees ? "Paid" : "Dues")
                       )}`}
                     >
-                      {student.paymentStatus}
+                      {student.paymentStatus || (student.InitialFees >= student.totalFees ? "Paid" : "Dues")}
                     </span>
                   </td>
                   <td className="py-4 px-4 sm:px-6">

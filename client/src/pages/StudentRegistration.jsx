@@ -13,6 +13,8 @@ import {
   Camera,
   FileText,
 } from "lucide-react";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import { newRegistration } from "../store/globalAction";
 import { useDispatch,useSelector } from "react-redux";
 import { allstudentDataSelector } from "../store/globalSelctor";
@@ -38,7 +40,7 @@ const StudentRegistration = () => {
     state: "",
     pincode: "",
     totalFees: "",
-    paidFees: "",
+    InitialFees: "",
   });
 
   const [photos, setPhotos] = useState({
@@ -150,21 +152,35 @@ const StudentRegistration = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Date of Birth <span className="text-red-500">*</span>
-              </label>
-              <div className="relative">
-                <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <input
-                  type="date"
-                  name="dateOfBirth"
-                  value={formData.dateOfBirth}
-                  onChange={handleInputChange}
-                  required
-                  className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-                />
-              </div>
-            </div>
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Date of Birth <span className="text-red-500">*</span>
+  </label>
+
+  <div className="relative">
+    <Calendar className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400 z-10" />
+
+    <DatePicker
+      selected={
+        formData.dateOfBirth
+          ? new Date(formData.dateOfBirth)
+          : null
+      }
+      onChange={(date) =>
+        setFormData({
+          ...formData,
+          dateOfBirth: date,
+        })
+      }
+      dateFormat="dd/MM/yyyy"
+      placeholderText="DD/MM/YYYY"
+      showYearDropdown
+      scrollableYearDropdown
+      yearDropdownItemNumber={100}
+      maxDate={new Date()}
+      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
+    />
+  </div>
+</div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -185,39 +201,60 @@ const StudentRegistration = () => {
             </div>
           </div>
 
-          <div className="mt-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Course <span className="text-red-500">*</span>
-            </label>
-            <select
-              name="course"
-              value={formData.course}
-              onChange={handleInputChange}
-              required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-            >
-              <option value="">Select Course</option>
-              <option value="IELTS Preparation">IELTS Preparation</option>
-              <option value="Spoken English Mastery">
-                Spoken English Mastery
-              </option>
-              <option value="Business English">Business English</option>
-              <option value="Grammar Fundamentals">Grammar Fundamentals</option>
-              <option value="TOEFL Preparation">TOEFL Preparation</option>
-              <option value="English for Beginners">
-                English for Beginners
-              </option>
-              <option value="Advanced English Communication">
-                Advanced English Communication
-              </option>
-              <option value="English Writing Skills">
-                English Writing Skills
-              </option>
-            </select>
-          </div>
+         <div className="mt-6">
+  <label className="block text-sm font-medium text-gray-700 mb-2">
+    Course <span className="text-red-500">*</span>
+  </label>
+
+  <select
+    name="course"
+    value={formData.course}
+    onChange={handleInputChange}
+    required
+    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
+  >
+    <option value="">Select Course</option>
+
+    {/* Computer Courses */}
+    <option value="DCA">DCA</option>
+    <option value="ADCA">ADCA</option>
+    <option value="PGDCA">PGDCA</option>
+    <option value="Tally with GST">Tally with GST</option>
+    <option value="Basic Computer Course">
+      Basic Computer Course
+    </option>
+    <option value="Typing Skills">Typing Skills</option>
+
+    {/* Development Courses */}
+    <option value="Web Development">Web Development</option>
+    <option value="Frontend Development">
+      Frontend Development
+    </option>
+    <option value="Full Stack Development">
+      Full Stack Development
+    </option>
+
+    {/* School Coaching */}
+    <option value="Class 1 to 5 Coaching">
+      Class 1 to 5 Coaching
+    </option>
+    <option value="Class 6 to 8 Coaching">
+      Class 6 to 8 Coaching
+    </option>
+    <option value="Class 9 to 10 Coaching">
+      Class 9 to 10 Coaching
+    </option>
+
+    {/* Spoken & English */}
+    <option value="Spoken English">Spoken English</option>
+    <option value="English Speaking Course">
+      English Speaking Course
+    </option>
+  </select>
+</div>
 
           {/* Photo Upload Section */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Passport-size Photo <span className="text-red-500">*</span>
@@ -289,7 +326,7 @@ const StudentRegistration = () => {
                 )}
               </div>
             </div>
-          </div>
+          </div>*/}
 
           <div className="mt-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -306,7 +343,7 @@ const StudentRegistration = () => {
               className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
               placeholder="Enter 12-digit Aadhaar number"
             />
-          </div>
+          </div> 
         </div>
 
         {/* Parent/Guardian Information */}
@@ -368,7 +405,6 @@ const StudentRegistration = () => {
                 value={formData.studentContact}
                 onChange={handleInputChange}
                 required
-                pattern="[0-9]{10}"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
                 placeholder="Enter 10-digit mobile number"
               />
@@ -384,7 +420,6 @@ const StudentRegistration = () => {
                 value={formData.parentContact}
                 onChange={handleInputChange}
                 required
-                pattern="[0-9]{10}"
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
                 placeholder="Enter 10-digit mobile number"
               />
@@ -564,21 +599,21 @@ const StudentRegistration = () => {
                 </span>
                 <input
                   type="number"
-                  name="paidFees"
-                  value={formData.paidFees}
+                  name="InitialFees"
+                  value={formData.InitialFees}
                   onChange={handleInputChange}
                   required
                   min="0"
                   max={formData.totalFees || undefined}
                   className="w-full pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-navy-500 focus:border-transparent"
-                  placeholder="Enter paid amount"
+                  placeholder="Enter Initial amount"
                 />
               </div>
             </div>
           </div>
 
           {/* Fees Summary */}
-          {formData.totalFees && formData.paidFees && (
+          {formData.totalFees && formData.InitialFees && (
             <div className="mt-6 p-4 bg-gray-50 rounded-lg">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
                 <div>
@@ -588,9 +623,9 @@ const StudentRegistration = () => {
                   </p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-600">Paid Amount</p>
+                  <p className="text-sm text-gray-600">Initial Amount</p>
                   <p className="text-lg font-bold text-green-600">
-                    ₹{Number(formData.paidFees).toLocaleString()}
+                    ₹{Number(formData.InitialFees).toLocaleString()}
                   </p>
                 </div>
                 <div>
@@ -598,7 +633,7 @@ const StudentRegistration = () => {
                   <p className="text-lg font-bold text-red-600">
                     ₹
                     {(
-                      Number(formData.totalFees) - Number(formData.paidFees)
+                      Number(formData.totalFees) - Number(formData.InitialFees)
                     ).toLocaleString()}
                   </p>
                 </div>

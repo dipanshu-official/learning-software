@@ -31,7 +31,7 @@ export const newRegistration = createAsyncThunk(
         state,
         pincode,
         totalFees,
-        paidFees,
+        InitialFees,
         paymentStatus, // optional, will auto-calc from schema if not sent
         course,
         joinDate,
@@ -40,7 +40,7 @@ export const newRegistration = createAsyncThunk(
         notes,
       } = studentData;
 
-      const response = await axiosInstance.post("/students/create", {
+      const response = await axiosInstance.post("/api/students/create", {
         firstName,
         lastName,
         dateOfBirth,
@@ -57,7 +57,7 @@ export const newRegistration = createAsyncThunk(
         state,
         pincode,
         totalFees,
-        paidFees,
+        InitialFees,
         paymentStatus,
         course,
         joinDate,
@@ -82,7 +82,7 @@ export const getAllStudent = createAsyncThunk(
   "getAllStudent/allstudent",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/students/allstudents");
+      const response = await axiosInstance.get("/api/students/allstudents");
       console.log("response from getAllStudent =>", response.data);
       return response.data;
     } catch (error) {
@@ -96,7 +96,7 @@ export const getCurrentStudent = createAsyncThunk(
   "getCurrentStudent/currentstudent",
   async (studentId, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get(`/students/getstudent/${studentId}`);
+      const response = await axiosInstance.get(`/api/students/getstudent/${studentId}`);
       console.log("response from getCurrentStudent =>", response.data);
       return response.data;
       
@@ -113,7 +113,7 @@ export const updateStudent = createAsyncThunk(
   async ({ studentId, updatedData }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.put(
-        `/students/update/${studentId}`,
+        `/api/students/update/${studentId}`,
         updatedData,
        
       );
@@ -133,7 +133,7 @@ export const deleteStudent = createAsyncThunk(
   async (studentId, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.delete(
-        `/students/delete/${studentId}`,
+        `/api/students/delete/${studentId}`,
       );
       return response.data;
     } catch (error) {
@@ -148,7 +148,7 @@ export const userLogin = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post('api/auth/login', { email, password });
+      const { data } = await axiosInstance.post('/api/auth/login', { email, password });
 
       console.log('Login response:', data); // should show { token: "..." }
 

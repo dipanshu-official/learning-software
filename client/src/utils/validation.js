@@ -72,12 +72,12 @@ export const validateStudentForm = (data) => {
     errors.push({ field: 'totalFees', message: 'Please enter a valid fee amount' });
   }
 
-  if (!validateNumber(data.paidFees)) {
-    errors.push({ field: 'paidFees', message: 'Please enter a valid paid amount' });
+  if (!validateNumber(data.InitialFees)) {
+    errors.push({ field: 'InitialFees', message: 'Please enter a valid Initial amount' });
   }
 
-  if (Number(data.paidFees) > Number(data.totalFees)) {
-    errors.push({ field: 'paidFees', message: 'Paid amount cannot exceed total fees' });
+  if (Number(data.InitialFees) > Number(data.totalFees)) {
+    errors.push({ field: 'InitialFees', message: 'Initial amount cannot exceed total fees' });
   }
 
   return errors;

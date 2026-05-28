@@ -7,6 +7,6 @@ router.post("/create", createStudent);
 router.get("/allstudents", getStudents);
 router.get("/getstudent/:id", getStudentById);
 router.delete("/delete/:id", deleteStudent);
-router.put("/update/:id", updateStudent);
+router.put("/update/:id", updateStudent); 
 
 export default router;

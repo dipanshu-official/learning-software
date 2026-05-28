@@ -1,64 +1,47 @@
 import React, { useEffect, useState } from "react";
-import { Printer, Download, Mail, Phone, MapPin, Award } from "lucide-react";
+import {
+  Printer,
+  Download,
+  Phone,
+  MapPin,
+  Award,
+  Mail,
+} from "lucide-react";
+
 import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+
 import { getCurrentStudent } from "../../store/globalAction";
 import { currentStudentDataSelector } from "../../store/globalSelctor";
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf'; 
+
+import html2canvas from "html2canvas";
+import jsPDF from "jspdf";
 
 export default function Invoice() {
   const { id } = useParams();
+
   const dispatch = useDispatch();
+
   const student = useSelector(currentStudentDataSelector);
-  console.log("student data in invoice =>", student);
 
   const [invoice, setInvoice] = useState({
     invoiceNumber: "",
     date: new Date().toISOString().split("T")[0],
+
     studentName: "",
     fatherName: "",
-    parentContact: "",
+    contact: "",
     email: "",
     address: "",
+
     course: "",
-    duration: "",
-    batchTime: "",
-    courseFee: 0,
-    discount: 0,
-    previousDues: 0,
+
+    totalFees: 0,
     amountPaid: 0,
+
     paymentMode: "",
     transactionId: "",
   });
-
-   const downloadPdf = () => {
-        // 1. उस DIV एलिमेंट को चुनें जिसमें पूरा सर्टिफिकेट है
-        // Note: आपको अपनी CSS में इस DIV को 'certificate-body-pdf' class देनी होगी
-        const input = document.querySelector('.certificate-body-pdf'); 
-
-        // 2. html2canvas का उपयोग करके DIV को Canvas (Image) में बदलें
-        html2canvas(input, { 
-            scale: 2, // उच्च रिज़ॉल्यूशन (High resolution) के लिए स्केल बढ़ाएँ
-            logging: true,
-            useCORS: true 
-        }).then((canvas) => {
-            const imgData = canvas.toDataURL('image/jpeg', 1.0); // JPEG फ़ॉर्मेट
-            
-            // 3. jspdf का उपयोग करके PDF डॉक्यूमेंट बनाएँ
-            // 'l' = landscape (क्षैतिज), 'mm' = units, 'a4' = size
-            const pdf = new jsPDF('l', 'mm', 'a4'); 
-            const pdfWidth = 297; // A4 चौड़ाई (mm में)
-            const pdfHeight = 210; // A4 ऊँचाई (mm में)
-            
-            // 4. इमेज को PDF पेज पर जोड़ें
-            pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight); 
-            
-            // 5. PDF फ़ाइल डाउनलोड करें
-            const filename = studentData ? `${studentData.name}_Certificate.pdf` : 'Certificate.pdf';
-            pdf.save(filename);
-        });
-    };
 
   useEffect(() => {
     if (id) {
@@ -66,237 +49,351 @@ export default function Invoice() {
     }
   }, [dispatch, id]);
 
-
-  // Update invoice data when student data is loaded
   useEffect(() => {
     if (student) {
       setInvoice((prev) => ({
         ...prev,
-        studentName: student.firstName + " " + student.lastName || "",
+
+        studentName:
+          `${student.firstName || ""} ${student.lastName || ""}`,
+
         fatherName: student.fatherName || "",
+
         contact: student.parentContact || "",
+
         email: student.email || "",
+
         address: student.currentAddress || "",
+
         course: student.course || "",
+
         totalFees: student.totalFees || 0,
-        previousDues: student.remainingFees || 0,
+
         amountPaid: student.paidFees || 0,
+
         paymentMode: student.paymentMode || "",
+
         transactionId: student.transactionId || "",
-        invoiceNumber: student.invoiceNumber || "",
+
+        invoiceNumber:
+          student.invoiceNumber ||
+          `INV-${Date.now().toString().slice(-6)}`,
       }));
     }
   }, [student]);
 
-
+  // PRINT
   const handlePrint = () => {
     window.print();
   };
 
-  return (
-    <div className="min-h-screen  bg-gradient-to-br from-slate-50 via-blue-50 to-slate-100 p-6">
-      <div className="max-w-4xl mx-auto bg-white shadow-2xl rounded-xl overflow-hidden print:shadow-none border border-slate-200">
-        {/* Decorative Top Border */}
-        <div className="h-1.5 bg-gradient-to-r from-amber-500 via-orange-500 to-amber-600"></div>
+  // DOWNLOAD PDF
+  const downloadPdf = () => {
+    const input = document.querySelector(".invoice-pdf");
 
-        {/* Header */}
-        <div className="relative bg-gradient-to-br from-slate-800 via-slate-900 to-slate-800 text-white px-6 py-5">
-          <div className="flex justify-between items-start gap-4">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-2">
-                <div className="bg-gradient-to-br from-amber-400 to-orange-500 p-2 rounded-lg">
-                  <Award className="w-5 h-5 text-white" />
+    html2canvas(input, {
+      scale: 2,
+      useCORS: true,
+    }).then((canvas) => {
+      const imgData = canvas.toDataURL("image/png");
+
+      const pdf = new jsPDF("p", "mm", "a4");
+
+      const pdfWidth = 210;
+      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+      pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+
+      pdf.save(`${invoice.studentName}_Invoice.pdf`);
+    });
+  };
+
+  return (
+    <div className="min-h-screen bg-slate-100 p-6">
+      <div className="max-w-4xl mx-auto">
+        {/* INVOICE */}
+        <div className="invoice-pdf bg-white shadow-2xl rounded-xl overflow-hidden border border-slate-200">
+          {/* TOP BAR */}
+          <div className="h-2 bg-gradient-to-r from-blue-600 to-indigo-700"></div>
+
+          {/* HEADER */}
+          <div className="bg-slate-900 text-white px-8 py-6">
+            <div className="flex justify-between items-start">
+              {/* LEFT */}
+              <div>
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-blue-600 p-3 rounded-xl">
+                    <Award className="w-6 h-6 text-white" />
+                  </div>
+
+                  <div>
+                    <h1 className="text-3xl font-bold">
+                      Dipanshu Institute
+                    </h1>
+
+                    <p className="text-blue-300 text-sm">
+                      Excellence in Computer Education
+                    </p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-xl font-bold">
-                    Cybernest
-                  </h1>
-                  <p className="text-amber-400 text-xs font-medium">
-                    Excellence in English Education
+
+                {/* CONTACT */}
+                <div className="space-y-2 text-sm text-slate-300">
+                  <p className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4" />
+                    Ramvaran Market, Bahumpur Bagha Road
+                  </p>
+
+                  <p className="flex items-center gap-2">
+                    <Phone className="w-4 h-4" />
+                    +91 7644805400
+                  </p>
+
+                  <p className="flex items-center gap-2">
+                    <Mail className="w-4 h-4" />
+                    dipanshuinstitute@gmail.com
                   </p>
                 </div>
               </div>
-              <div className="flex gap-4 text-xs text-slate-300 mt-3">
-                <span className="flex items-center gap-1">
-                  <MapPin className="w-3 h-3" />
-                  Patna, Bihar
-                </span>
-                <span className="flex items-center gap-1">
-                  <Phone className="w-3 h-3" />
-                  +91 9876543210
-                </span>
+
+              {/* RIGHT */}
+              <div className="bg-white text-slate-900 px-5 py-4 rounded-xl shadow-lg">
+                <p className="text-xs font-bold text-blue-600 uppercase">
+                  Fee Invoice
+                </p>
+
+                <h2 className="text-xl font-bold mt-1">
+                  {invoice.invoiceNumber}
+                </h2>
+
+                <p className="text-sm text-slate-500 mt-2">
+                  {new Date(invoice.date).toLocaleDateString("en-IN")}
+                </p>
               </div>
             </div>
-
-            <div className="bg-white text-slate-900 px-4 py-3 rounded-lg shadow-lg">
-              <p className="text-xs font-bold text-amber-600 uppercase">
-                Tax Invoice
-              </p>
-              <p className="text-lg font-bold">{invoice.invoiceNumber}</p>
-              <p className="text-xs text-slate-600 mt-1">
-                {new Date(invoice.date).toLocaleDateString("en-IN", {
-                  day: "2-digit",
-                  month: "short",
-                  year: "numeric",
-                })}
-              </p>
-            </div>
           </div>
-        </div>
 
-        {/* Proprietor Banner */}
-        <div className="bg-gradient-to-r from-amber-50 to-orange-50 px-6 py-2 border-b border-amber-200">
-          <div className="flex items-center justify-between text-xs">
-            <p>
-              <span className="text-slate-600">Proprietor:</span>{" "}
-              <span className="font-bold text-slate-900">Suraj Sir</span>
+          {/* OWNER */}
+          <div className="bg-blue-50 border-b border-blue-100 px-8 py-3 flex justify-between">
+            <p className="text-sm">
+              <span className="text-slate-500">Director:</span>{" "}
+              <span className="font-bold text-slate-800">
+                Dipanshu Kumar
+              </span>
             </p>
-            <div className="flex gap-4 text-slate-600">
-              <span>GSTIN: 10XXXXX1234X1Z5</span>
-            </div>
-          </div>
-        </div>
 
-        <div className="px-6 py-4">
-          {/* Bill To & Course Section */}
-          <div className="grid grid-cols-2 gap-4 mb-4">
-            <div className="bg-gradient-to-br from-slate-50 to-slate-100 rounded-lg p-3 border border-slate-200">
-              <h2 className="text-xs font-bold text-amber-600 uppercase mb-2">
-                Student Information
-              </h2>
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Name:</span>
-                  <span className="font-semibold text-slate-900">
-                    {invoice.studentName}
-                  </span>
+            <p className="text-sm text-slate-600">
+              ADCA | DCA | Web Development
+            </p>
+          </div>
+
+          {/* BODY */}
+          <div className="p-8">
+            {/* STUDENT DETAILS */}
+            <div className="grid grid-cols-2 gap-6 mb-8">
+              {/* LEFT */}
+              <div className="bg-slate-50 rounded-xl p-5 border">
+                <h3 className="font-bold text-blue-600 mb-4 uppercase text-sm">
+                  Student Details
+                </h3>
+
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Student Name:</span>
+
+                    <span className="font-semibold">
+                      {invoice.studentName}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Father Name:</span>
+
+                    <span className="font-semibold">
+                      {invoice.fatherName}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Contact:</span>
+
+                    <span className="font-semibold">
+                      {invoice.contact}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Email:</span>
+
+                    <span className="font-semibold">
+                      {invoice.email}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Course:</span>
+
+                    <span className="font-semibold">
+                      {invoice.course}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Father:</span>
-                  <span className="font-semibold text-slate-800">
-                    {invoice.fatherName}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Contact:</span>
-                  <span className="font-semibold text-slate-800">
-                    {invoice.contact}
-                  </span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Address:</span>
-                  <span className="font-semibold text-slate-800">
-                    {invoice.address}
-                  </span>
+              </div>
+
+              {/* RIGHT */}
+              <div className="bg-blue-50 rounded-xl p-5 border border-blue-100">
+                <h3 className="font-bold text-blue-600 mb-4 uppercase text-sm">
+                  Payment Details
+                </h3>
+
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Payment Mode:</span>
+
+                    <span className="font-semibold">
+                      {invoice.paymentMode || "Cash"}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">
+                      Transaction ID:
+                    </span>
+
+                    <span className="font-semibold">
+                      {invoice.transactionId || "N/A"}
+                    </span>
+                  </div>
+
+                  <div className="flex justify-between">
+                    <span className="text-slate-500">Invoice Date:</span>
+
+                    <span className="font-semibold">
+                      {new Date(invoice.date).toLocaleDateString(
+                        "en-IN"
+                      )}
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-lg p-3 border border-blue-200">
-              <h2 className="text-xs font-bold text-blue-600 uppercase mb-2">
-                Course Details
-              </h2>
-              <div className="space-y-1 text-xs">
-                <div className="flex justify-between">
-                  <span className="text-slate-500">Course:</span>
-                  <span className="font-semibold text-slate-900">
-                    {invoice.course}
-                  </span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Fee Breakdown Table */}
-          <div className="mb-4">
-            <div className="overflow-x-auto rounded-lg border border-slate-200">
-              <table className="w-full text-xs">
+            {/* FEES TABLE */}
+            <div className="overflow-hidden rounded-xl border border-slate-200">
+              <table className="w-full">
                 <thead>
-                  <tr className="bg-gradient-to-r from-slate-700 to-slate-800 text-white">
-                    <th className="text-left p-2 font-semibold">Description</th>
-                    <th className="text-right p-2 font-semibold">Amount (₹)</th>
+                  <tr className="bg-slate-800 text-white">
+                    <th className="text-left px-5 py-4">
+                      Description
+                    </th>
+
+                    <th className="text-right px-5 py-4">
+                      Amount
+                    </th>
                   </tr>
                 </thead>
-                <tbody className="bg-white">
-                
-               
-                  <tr className="border-b border-amber-200 bg-gradient-to-r from-amber-50 to-orange-50">
-                    <td className="p-2 font-bold">Total Amount</td>
-                    <td className="p-2 text-right font-bold">
+
+                <tbody>
+                  <tr className="border-b">
+                    <td className="px-5 py-4">Course Fees</td>
+
+                    <td className="px-5 py-4 text-right font-semibold">
                       ₹ {invoice.totalFees}
                     </td>
                   </tr>
-                  <tr className="border-b border-slate-100 bg-green-50">
-                    <td className="p-2 font-semibold text-green-700">
-                      Amount Paid
+
+                  <tr className="border-b bg-green-50">
+                    <td className="px-5 py-4 text-green-700 font-semibold">
+                      Paid Amount
                     </td>
-                    <td className="p-2 text-right font-bold text-green-700">
-                      ₹{invoice.amountPaid.toLocaleString("en-IN")}
+
+                    <td className="px-5 py-4 text-right text-green-700 font-bold">
+                      ₹ {invoice.amountPaid}
                     </td>
                   </tr>
-                  <tr className="bg-gradient-to-r from-slate-800 to-slate-900 text-white">
-                    <td className="p-2 font-bold">Balance Due</td>
-                    <td className="p-2 text-right font-bold text-lg">
-                      ₹{invoice.totalFees - invoice.amountPaid}
+
+                  <tr className="bg-red-50">
+                    <td className="px-5 py-4 text-red-700 font-semibold">
+                      Remaining Fees
+                    </td>
+
+                    <td className="px-5 py-4 text-right text-red-700 font-bold">
+                      ₹ {invoice.totalFees - invoice.amountPaid}
                     </td>
                   </tr>
                 </tbody>
               </table>
             </div>
-          </div>
 
-          {/* Terms and Signature */}
-          <div className="grid grid-cols-2 gap-4 pt-3 border-t border-slate-200">
-            <div>
-              <h3 className="font-bold text-slate-900 mb-1 text-xs">
-                Terms & Conditions:
-              </h3>
-              <ul className="space-y-0.5 text-xs text-slate-600">
-                <li>• Fee once paid is non-refundable</li>
-                <li>• Regular attendance is mandatory</li>
-                <li>• Balance must be cleared before completion</li>
-                <li>• Certificate issued after full payment</li>
-              </ul>
-            </div>
+            {/* TERMS */}
+            <div className="mt-8 grid grid-cols-2 gap-6">
+              {/* TERMS */}
+              <div>
+                <h3 className="font-bold text-slate-800 mb-3">
+                  Terms & Conditions
+                </h3>
 
-            <div className="flex flex-col items-end justify-end">
-              <div className="text-center">
-                <div className="mb-8"></div>
-                <div className="border-t-2 border-slate-800 pt-1 w-40">
-                  <p className="font-bold text-slate-900 text-sm">Suraj Sir</p>
-                  <p className="text-xs text-slate-600">Authorized Signatory</p>
+                <ul className="space-y-2 text-sm text-slate-600">
+                  <li>• Fees once paid are non-refundable.</li>
+
+                  <li>• Regular attendance is mandatory.</li>
+
+                  <li>
+                    • Certificate will be issued after full payment.
+                  </li>
+
+                  <li>
+                    • Students must follow institute rules.
+                  </li>
+                </ul>
+              </div>
+
+              {/* SIGN */}
+              <div className="flex justify-end items-end">
+                <div className="text-center">
+                  <div className="h-16"></div>
+
+                  <div className="border-t-2 border-slate-800 pt-2 w-48">
+                    <p className="font-bold">
+                      Dipanshu Kumar
+                    </p>
+
+                    <p className="text-sm text-slate-500">
+                      Authorized Signature
+                    </p>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
+
+          {/* FOOTER */}
+          <div className="bg-slate-900 text-center py-4">
+            <p className="text-blue-300 font-semibold">
+              Thank You for Choosing Dipanshu Institute!
+            </p>
+
+            <p className="text-slate-400 text-sm mt-1">
+              We wish you a bright future 🚀
+            </p>
+          </div>
         </div>
 
-        {/* Footer */}
-        <div className="bg-gradient-to-r from-slate-800 via-slate-900 to-slate-800 px-6 py-3 text-center">
-          <p className="text-amber-400 font-bold text-xs">
-            Thank You for Choosing Cybernest!
-          </p>
-          <p className="text-slate-400 text-xs mt-1">
-            For queries contact us. Wishing you success! 📚
-          </p>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="p-4 bg-slate-50 flex gap-3 justify-center print:hidden border-t border-slate-200">
+        {/* BUTTONS */}
+        <div className="flex justify-center gap-4 mt-6 print:hidden">
           <button
             onClick={handlePrint}
-            className="flex items-center gap-2 bg-gradient-to-r from-slate-700 to-slate-800 text-white px-6 py-2 rounded-lg hover:from-slate-800 hover:to-slate-900 transition shadow-lg font-semibold text-sm"
+            className="flex items-center gap-2 bg-slate-800 text-white px-6 py-3 rounded-xl hover:bg-slate-900 transition"
           >
-            <Printer size={16} />
+            <Printer size={18} />
             Print Invoice
           </button>
+
           <button
-            onClick={() =>
-              alert("Download functionality with jsPDF or React-PDF")
-            }
-            className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 text-white px-6 py-2 rounded-lg hover:from-amber-600 hover:to-orange-700 transition shadow-lg font-semibold text-sm"
+            onClick={downloadPdf}
+            className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-xl hover:bg-blue-700 transition"
           >
-            <Download size={16} />
+            <Download size={18} />
             Download PDF
           </button>
         </div>

@@ -139,9 +139,9 @@ const Payments= () => {
     totalRevenue: allStudents.reduce((sum, student) => sum + Number(student.paidFees), 0),
     pendingAmount: allStudents.reduce((sum, student) => sum + (Number(student.totalFees) - Number(student.paidFees)), 0),
     totalStudents: allStudents.length,
-    paidStudents: allStudents.filter(s => s.paymentStatus === 'Paid').length,
+    paidStudents: allStudents.filter(s => (s.paymentStatus || (s.paidFees >= s.totalFees ? "Paid" : "Dues")) === 'Paid').length,
     partialStudents: allStudents.filter(s => s.paymentStatus === 'Partial').length,
-    dueStudents: allStudents.filter(s => s.paymentStatus === 'Due').length
+    dueStudents: allStudents.filter(s => (s.paymentStatus || (s.paidFees >= s.totalFees ? "Paid" : "Dues")) === 'Dues').length
   };
 
   // Sample payment transactions
@@ -204,12 +204,13 @@ const Payments= () => {
   ];
 
   const getPaymentStatusBadge = (status) => {
-    switch (status.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'paid':
         return 'bg-green-100 text-green-800';
       case 'partial':
         return 'bg-yellow-100 text-yellow-800';
       case 'due':
+      case 'dues':
         return 'bg-red-100 text-red-800';
       default:
         return 'bg-gray-100 text-gray-800';
@@ -248,7 +249,9 @@ const Payments= () => {
   const filteredStudents = allStudents.filter(student => {
     const fullName = `${student.firstName} ${student.lastName}`.toLowerCase();
     const matchesSearch = searchTerm === '' || fullName.includes(searchTerm.toLowerCase());
-    const matchesStatusFilter = statusFilter === 'all' || student.paymentStatus.toLowerCase() === statusFilter.toLowerCase();
+    
+    const studentStatus = student.paymentStatus || (student.paidFees >= student.totalFees ? "Paid" : "Dues");
+    const matchesStatusFilter = statusFilter === 'all' || studentStatus.toLowerCase() === statusFilter.toLowerCase();
     
     return matchesSearch && matchesStatusFilter;
   });
@@ -564,8 +567,8 @@ const Payments= () => {
                         <h3 className="font-semibold text-gray-900">{student.firstName} {student.lastName}</h3>
                         <p className="text-sm text-gray-600">{student.course}</p>
                       </div>
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusBadge(student.paymentStatus)}`}>
-                        {student.paymentStatus}
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${getPaymentStatusBadge(student.paymentStatus || (student.paidFees >= student.totalFees ? "Paid" : "Dues"))}`}>
+                        {student.paymentStatus || (student.paidFees >= student.totalFees ? "Paid" : "Dues")}
                       </span>
                     </div>
 
@@ -575,7 +578,7 @@ const Payments= () => {
                         <span className="font-semibold">₹{Number(student.totalFees).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
-                        <span className="text-gray-600">Paid Amount:</span>
+                        <span className="text-gray-600">Initial Amount:</span>
                         <span className="font-semibold text-green-600">₹{Number(student.paidFees).toLocaleString()}</span>
                       </div>
                       <div className="flex justify-between">
