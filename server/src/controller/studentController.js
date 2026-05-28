@@ -3,7 +3,15 @@ import Student from "../models/Student.js";
 
 export const createStudent = async (req, res) => {
     try {
-        const student = await Student.create(req.body);
+        const studentData = { ...req.body };
+        
+        if (req.file) {
+            studentData.photos = {
+                passport: req.file.filename
+            };
+        }
+        
+        const student = await Student.create(studentData);
         
         res.status(201).json(student);
         await sendWelcomeEmail(student);

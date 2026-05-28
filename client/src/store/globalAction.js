@@ -40,30 +40,17 @@ export const newRegistration = createAsyncThunk(
         notes,
       } = studentData;
 
-      const response = await axiosInstance.post("/api/students/create", {
-        firstName,
-        lastName,
-        dateOfBirth,
-        gender,
-        fatherName,
-        motherName,
-        studentContact,
-        parentContact,
-        email,
-        aadhaarNumber,
-        permanentAddress,
-        currentAddress,
-        city,
-        state,
-        pincode,
-        totalFees,
-        InitialFees,
-        paymentStatus,
-        course,
-        joinDate,
-        enrollmentId,
-        batch,
-        notes,
+      const formData = new FormData();
+      Object.entries(studentData).forEach(([key, value]) => {
+        if (value !== undefined && value !== null) {
+          formData.append(key, value);
+        }
+      });
+
+      const response = await axiosInstance.post("/api/students/create", formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
       });
 
       return response.data;

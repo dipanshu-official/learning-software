@@ -82,7 +82,8 @@ const StudentRegistration = () => {
     e.preventDefault();
 
     try {
-      const resultAction = await dispatch(newRegistration(formData));
+      const payload = { ...formData, passportPhoto: photos.passportPhoto };
+      const resultAction = await dispatch(newRegistration(payload));
 
       if (newRegistration.fulfilled.match(resultAction)) {
         toast.success("Student registered successfully!");
@@ -254,7 +255,7 @@ const StudentRegistration = () => {
 </div>
 
           {/* Photo Upload Section */}
-          {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
                 Passport-size Photo <span className="text-red-500">*</span>
@@ -290,43 +291,7 @@ const StudentRegistration = () => {
                 )}
               </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Aadhaar Card Photo <span className="text-red-500">*</span>
-              </label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-navy-400 transition-colors">
-                <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                <p className="text-sm text-gray-600 mb-2">
-                  Upload Aadhaar card photo
-                </p>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    handlePhotoUpload(
-                      "aadhaarPhoto",
-                      e.target.files?.[0] || null
-                    )
-                  }
-                  className="hidden"
-                  id="aadhaar-photo"
-                />
-                <label
-                  htmlFor="aadhaar-photo"
-                  className="inline-flex items-center px-4 py-2 bg-navy-600 text-white rounded-lg hover:bg-navy-700 cursor-pointer transition-colors"
-                >
-                  <Upload className="h-4 w-4 mr-2" />
-                  Choose File
-                </label>
-                {photos.aadhaarPhoto && (
-                  <p className="text-sm text-green-600 mt-2">
-                    {photos.aadhaarPhoto.name}
-                  </p>
-                )}
-              </div>
-            </div>
-          </div>*/}
+          </div>
 
           <div className="mt-6">
             <label className="block text-sm font-medium text-gray-700 mb-2">

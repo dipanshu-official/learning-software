@@ -21,6 +21,9 @@ app.use(cors({
 
 app.use(express.json());
 
+// Serve static files
+app.use('/uploads', express.static('uploads'));
+
 // Routes
 app.use('/api/students', studentRoute);
 app.use('/api/auth', authRoutes);
