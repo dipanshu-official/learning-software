@@ -28,6 +28,8 @@ const Sidebar = ({
     { id: 'dashboard', label: 'Dashboard', icon: Home, path: '/dashboard' },
     { id: 'registration', label: 'New Registration', icon: UserPlus, path: '/new-registration' },
     { id: 'students', label: 'Students', icon: Users, path: '/students' },
+      { id: 'registration', label: 'New Teacher', icon: UserPlus, path: '/new-teacher' },
+    { id: 'students', label: 'Teachers', icon: Users, path: '/teachers' },
     { id: 'new-course', label: 'Create Course', icon: BookOpen, path: '/create-course' },
     { id: 'courses', label: 'Courses', icon: BookOpen, path: '/courses' },
     { id: 'notifications', label: 'Send Notifications', icon: Bell, path: '/notifications' },

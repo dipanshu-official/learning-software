@@ -40,7 +40,7 @@ const Login = () => {
 
       console.log("Login success:", response);
 
-      toast.success("Welcome back, Admin!");
+      toast.success("Welcome back, Institute!");
 
       if (formData.rememberMe) {
         localStorage.setItem("token", response.token);
@@ -66,7 +66,7 @@ const Login = () => {
           </div>
           <h1 className="text-3xl font-bold text-white mb-2">LMS</h1>
 
-          <p className="text-blue-300 text-sm mt-2">Admin Panel Login</p>
+          <p className="text-blue-300 text-sm mt-2">Institute Portal Login</p>
         </div>
 
         {/* Login Form */}

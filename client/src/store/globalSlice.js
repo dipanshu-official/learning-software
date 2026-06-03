@@ -25,7 +25,7 @@ const initialState = {
 const globalSlice = createSlice({
   name: "global",
   initialState,
-  reducers: {
+  reducers: { 
     // Synchronous actions
     clearError: (state) => {
       state.error = null;
@@ -62,7 +62,7 @@ const globalSlice = createSlice({
     });
 
     builder.addCase(getAllTeacher.fulfilled, (state, action) => {
-      state.allTeacher = action.payload.data;
+      state.allTeacher = action.payload.data || action.payload;
     });
 
     // chat section

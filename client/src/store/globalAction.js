@@ -1,10 +1,10 @@
 import axiosInstance from "../api/axiosInstance";
 
 // Utility for setting auth headers
-// const getAuthHeaders = () => {
-//   const token = localStorage.getItem("authToken");
-//   return `Bearer ${token}`;
-// };
+const getAuthHeaders = () => {
+  const token = localStorage.getItem("token") || localStorage.getItem("authToken");
+  return `Bearer ${token}`;
+};
 
 //  student api section
 import { createAsyncThunk } from "@reduxjs/toolkit";
@@ -48,9 +48,7 @@ export const newRegistration = createAsyncThunk(
       });
 
       const response = await axiosInstance.post("/api/students/create", formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data'
-        }
+       
       });
 
       return response.data;
@@ -135,14 +133,14 @@ export const userLogin = createAsyncThunk(
   'auth/login',
   async ({ email, password }, { rejectWithValue }) => {
     try {
-      const { data } = await axiosInstance.post('/api/auth/login', { email, password });
+      const { data } = await axiosInstance.post('/api/institutes/login', { email, password });
 
       console.log('Login response:', data); // should show { token: "..." }
 
       // Return as an object so the structure is predictable everywhere
       return { token: data.token };
     } catch (err) {
-      return rejectWithValue(err.response?.data?.error || 'Login failed');
+      return rejectWithValue(err.response?.data?.message || err.response?.data?.error || 'Login failed');
     }
   }
 );
@@ -188,7 +186,7 @@ export const addTeacher = createAsyncThunk(
       } = teacherData;
 
       const response = await axiosInstance.post(
-        "/register",
+        "/api/teachers/register",
         {
           firstName,
           lastName,
@@ -199,9 +197,7 @@ export const addTeacher = createAsyncThunk(
           subjects,
           address,
         },
-        {
-          headers: getAuthHeaders(),
-        }
+      
       );
       return response.data;
     } catch (error) {
@@ -219,7 +215,7 @@ export const getAllTeacher = createAsyncThunk(
   "teacher/teachers",
   async (_, { rejectWithValue }) => {
     try {
-      const response = await axiosInstance.get("/teachers", {
+      const response = await axiosInstance.get("/api/teachers/all", {
         headers: {
           Authorization: getAuthHeaders(),
         },

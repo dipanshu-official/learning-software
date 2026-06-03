@@ -19,6 +19,8 @@ import Payments from "../pages/Payments";
 import Invoice from "../components/invoice/Invoice";
 import Certificate from "../components/certificate/Certificate";
 import Signup from "../pages/Signup";
+import Teacher from "../pages/Teacher";
+import TeacherRagistraition from "../pages/TeacherRagistraition";
 
 const AppRoutes = () => {
   return (
@@ -212,6 +214,18 @@ const AppRoutes = () => {
           </ProtectedRoute>
         }
       >
+        <Route index element={<Teacher />} />
+      </Route>
+
+      <Route
+        path="/new-teacher"
+        element={
+          <ProtectedRoute>
+            <Layout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<TeacherRagistraition />} />
       </Route>
 
       <Route

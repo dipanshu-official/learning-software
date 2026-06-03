@@ -5,6 +5,7 @@ import dotenv from 'dotenv';
 import studentRoute from './src/routes/studentRoute.js';
 import authRoutes from './src/routes/authRoutes.js';
 import instituteRoutes from './src/routes/instituteRoutes.js';
+import teacherRoute from './src/routes/TeacherRoute.js';
 import connectDB from './src/config/db.js';
 
 dotenv.config();
@@ -16,7 +17,7 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://localhost:5173'
+  origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175']
 }));
 
 app.use(express.json());
@@ -28,6 +29,7 @@ app.use('/uploads', express.static('uploads'));
 app.use('/api/students', studentRoute);
 app.use('/api/auth', authRoutes);
 app.use('/api/institutes', instituteRoutes);
+app.use('/api/teachers', teacherRoute);
 
 app.get('/', (req, res) => {
   res.send("Backend Running");

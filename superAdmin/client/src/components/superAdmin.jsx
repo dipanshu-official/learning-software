@@ -1,10 +1,11 @@
-import { useState } from "react";
-// import {
-//   useQueryClient,
-//   useMutation,
-//   useQueryClient,
-// } from "tanstack/react-query";
-import axios from "axios";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchInstitutes,
+  createInstitute,
+  updateInstitute,
+  deleteInstitute,
+} from "../store/instituteSlice";
 
 const generatePassword = () => {
   const chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghjkmnpqrstuvwxyz23456789@#$!";
@@ -71,7 +72,9 @@ const mockData = [
 ];
 
 export default function SuperAdminPanel() {
-  const [institutes, setInstitutes] = useState(mockData);
+  const dispatch = useDispatch();
+  const { list: institutes, loading, error } = useSelector((state) => state.institutes);
+
   const [form, setForm] = useState(initialForm);
   const [errors, setErrors] = useState({});
   const [showModal, setShowModal] = useState(false);
@@ -82,7 +85,11 @@ export default function SuperAdminPanel() {
   const [tab, setTab] = useState("list");
   const [copiedField, setCopiedField] = useState(null);
   const [createdCreds, setCreatedCreds] = useState(null);
-  // const queryClient = useQueryClient();
+
+  useEffect(() => {
+    dispatch(fetchInstitutes());
+  }, [dispatch]);
+
   const validate = () => {
     const e = {};
     if (!form.instituteName.trim())
@@ -106,46 +113,65 @@ export default function SuperAdminPanel() {
       return;
     }
     if (editId) {
-      setInstitutes((prev) =>
-        prev.map((i) => (i.id === editId ? { ...i, ...form } : i)),
-      );
-      setSuccessMsg("Institute updated successfully!");
-      setEditId(null);
+      dispatch(updateInstitute({ id: editId, data: form }))
+        .unwrap()
+        .then(() => {
+          setSuccessMsg("Institute updated successfully!");
+          setEditId(null);
+          setForm(initialForm);
+          setErrors({});
+          setTab("list");
+          setTimeout(() => setSuccessMsg(""), 3000);
+        });
     } else {
-      const newInst = { ...form, id: Date.now() };
-      setInstitutes((prev) => [...prev, newInst]);
-      setCreatedCreds({
-        email: form.email,
-        password: form.password,
-        name: form.instituteName,
-      });
-      setShowModal(true);
-      setSuccessMsg("Institute created successfully!");
+      dispatch(createInstitute(form))
+        .unwrap()
+        .then(() => {
+          setCreatedCreds({
+            email: form.email,
+            password: form.password,
+            name: form.instituteName,
+          });
+          setShowModal(true);
+          setSuccessMsg("Institute created successfully!");
+          setForm(initialForm);
+          setErrors({});
+          setTab("list");
+          setTimeout(() => setSuccessMsg(""), 3000);
+        });
     }
-    setForm(initialForm);
-    setErrors({});
-    setTab("list");
-    setTimeout(() => setSuccessMsg(""), 3000);
   };
 
   const handleEdit = (inst) => {
-    setForm({ ...inst, password: "" });
-    setEditId(inst.id);
+    setForm({
+      instituteName: inst.instituteName,
+      coachingType: inst.coachingType,
+      ownerName: inst.ownerName,
+      email: inst.email,
+      phone: inst.phone,
+      city: inst.city,
+      password: "",
+      status: inst.status,
+    });
+    setEditId(inst._id);
     setTab("add");
   };
 
   const handleDelete = (id) => {
-    setInstitutes((prev) => prev.filter((i) => i.id !== id));
+    dispatch(deleteInstitute(id))
+      .unwrap()
+      .then(() => {
+        setSuccessMsg("Institute deleted successfully!");
+        setTimeout(() => setSuccessMsg(""), 3000);
+      });
   };
 
   const toggleStatus = (id) => {
-    setInstitutes((prev) =>
-      prev.map((i) =>
-        i.id === id
-          ? { ...i, status: i.status === "active" ? "inactive" : "active" }
-          : i,
-      ),
-    );
+    const inst = institutes.find((i) => i._id === id);
+    if (inst) {
+      const newStatus = inst.status === "active" ? "inactive" : "active";
+      dispatch(updateInstitute({ id, data: { status: newStatus } }));
+    }
   };
 
   const copyToClipboard = (text, field) => {
@@ -344,7 +370,7 @@ export default function SuperAdminPanel() {
                     )}
                     {filtered.map((inst, i) => (
                       <tr
-                        key={inst.id}
+                        key={inst._id || inst.id}
                         className={`border-b border-slate-800/50 hover:bg-slate-800/40 transition ${i % 2 === 0 ? "" : "bg-slate-800/10"}`}
                       >
                         <td className="px-4 py-3">
@@ -369,7 +395,7 @@ export default function SuperAdminPanel() {
                         </td>
                         <td className="px-4 py-3">
                           <button
-                            onClick={() => toggleStatus(inst.id)}
+                            onClick={() => toggleStatus(inst._id || inst.id)}
                             className={`text-xs px-2.5 py-1 rounded-full font-medium border transition ${inst.status === "active" ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20 hover:bg-emerald-500/20" : "bg-rose-500/10 text-rose-400 border-rose-500/20 hover:bg-rose-500/20"}`}
                           >
                             {inst.status === "active" ? "Active" : "Inactive"}
@@ -397,7 +423,7 @@ export default function SuperAdminPanel() {
                               </svg>
                             </button>
                             <button
-                              onClick={() => handleDelete(inst.id)}
+                              onClick={() => handleDelete(inst._id || inst.id)}
                               className="text-slate-400 hover:text-rose-400 transition p-1 rounded"
                               title="Delete"
                             >
